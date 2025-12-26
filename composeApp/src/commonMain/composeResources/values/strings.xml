@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<resources>
+    <string name="search_hint">Search...</string>
+    <string name="close_hint">Clear Search</string>
+    <string name="search_results">Search Results</string>
+    <string name="favorites">Favorites</string>
+    <string name="no_search_results">Oops , there aren't any books for your search query</string>
+    <string name="no_favorite_books">You haven't saved any favorite books yet</string>
+    <string name="error_disk_full">You haven't saved any favorite books yet</string>
+    <string name="error_unknown">You haven't saved any favorite books yet</string>
+    <string name="error_request_timeout">You haven't saved any favorite books yet</string>
+    <string name="error_no_internet">You haven't saved any favorite books yet</string>
+    <string name="error_too_many_requests">You haven't saved any favorite books yet</string>
+    <string name="book_cover">Book Cover</string>
+    <string name="rating">Rating</string>
+    <string name="pages">Pages</string>
+    <string name="languages">Languages</string>
+    <string name="synopsis">Synopsis</string>
+    <string name="description_unavailable">Description not available</string>
+    <string name="error_serialization">You haven't saved any favorite books yet</string>
+    <string name="go_back">Go back</string>
+    <string name="mark_as_favorite">Mark as favorite</string>
+    <string name="remove_from_favorites">Remove from favorites</string>
+
+</resources>

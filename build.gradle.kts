@@ -1,18 +1,16 @@
 plugins {
-    // Android Plugins
+    // Android
     alias(libs.plugins.androidApplication) apply false
     alias(libs.plugins.androidLibrary) apply false
 
-    // Kotlin & Compose Plugins
+    // Kotlin & Compose
+    // Note: We renamed these in libs.toml to match Philipp's references
     alias(libs.plugins.kotlinMultiplatform) apply false
-    alias(libs.plugins.composeMultiplatform) apply false
-    alias(libs.plugins.composeCompiler) apply false
-    alias(libs.plugins.composeHotReload) apply false
+    alias(libs.plugins.jetbrainsCompose) apply false
+    alias(libs.plugins.compose.compiler) apply false
 
-    // ✅ ADDED THIS: Serialization (Needed for JSON/API)
+    // Features (Serialization, Database)
     alias(libs.plugins.jetbrains.kotlin.serialization) apply false
-
-    // ✅ KSP & Room (Needed for Database)
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.room) apply false
 }

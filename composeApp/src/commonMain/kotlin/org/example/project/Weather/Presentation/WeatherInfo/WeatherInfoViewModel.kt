@@ -5,6 +5,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 
 class WeatherInfoViewModel : ViewModel() {
 
-    val state : MutableStateFlow<WeatherInfoState()>
+   private  val _state = MutableStateFlow(WeatherInfoState())
 
 }

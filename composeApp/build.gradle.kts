@@ -5,11 +5,8 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
-    alias(libs.plugins.composeMultiplatform)
-    alias(libs.plugins.composeCompiler)
-    alias(libs.plugins.composeHotReload) // Kept your hot reload
-
-    // ✅ Added for Bookpedia Architecture
+    alias(libs.plugins.jetbrainsCompose)
+    alias(libs.plugins.compose.compiler)
     alias(libs.plugins.jetbrains.kotlin.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
@@ -23,6 +20,9 @@ kotlin {
         }
     }
 
+    // 1. THIS IS THE KEY FIX. This auto-generates 'nativeMain' and links it to iOS.
+    applyDefaultHierarchyTemplate()
+
     listOf(
         iosX64(),
         iosArm64(),
@@ -34,11 +34,8 @@ kotlin {
         }
     }
 
-    // ✅ Renamed from 'jvm()' to 'jvm("desktop")' to match Bookpedia
-    // ⚠️ Don't forget to rename your 'src/desktopMain' folder to 'src/desktopMain'
     jvm("desktop")
 
-    // ✅ Added Room Database Schema setup
     room {
         schemaDirectory("$projectDir/schemas")
     }
@@ -49,14 +46,11 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
-
-            // ✅ Koin for Android
             implementation(libs.koin.android)
             implementation(libs.koin.androidx.compose)
-
-            // ✅ Ktor for Android
             implementation(libs.ktor.client.okhttp)
         }
+
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -64,51 +58,43 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
-            implementation(libs.androidx.lifecycle.viewmodelCompose)
-            implementation(libs.androidx.lifecycle.runtimeCompose)
+            implementation(libs.androidx.lifecycle.viewmodel)
+            implementation(libs.androidx.lifecycle.runtime.compose)
 
-            // ✅ Navigation & Serialization
             implementation(libs.jetbrains.compose.navigation)
             implementation(libs.kotlinx.serialization.json)
 
-            // ✅ Koin (Dependency Injection)
-            implementation(libs.koin.compose)
-            implementation(libs.koin.compose.viewmodel)
-            api(libs.koin.core)
-
-            // ✅ Ktor (Networking) & Coil (Image Loading)
-            implementation(libs.bundles.ktor)
-            implementation(libs.bundles.coil)
-
-            // ✅ Room (Database)
             implementation(libs.androidx.room.runtime)
             implementation(libs.sqlite.bundled)
+
+            implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
+            api(libs.koin.core) // Make Koin Core available to platform source sets
+
+            implementation(libs.bundles.ktor)
+            implementation(libs.bundles.coil)
         }
 
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
-            implementation(libs.kotlinx.coroutinesSwing) // Kept your coroutinesSwing
-            implementation(libs.ktor.client.okhttp) // Desktop also uses OkHttp
+            implementation(libs.kotlinx.coroutines.swing)
+            implementation(libs.ktor.client.okhttp)
         }
 
-        // Using 'nativeMain' to capture all iOS targets
-        nativeMain.dependencies {
-            implementation(libs.ktor.client.darwin)
-        }
-
-        dependencies {
-            ksp(libs.androidx.room.compiler)
+        // This will now work because applyDefaultHierarchyTemplate() created it
+        val nativeMain by getting {
+            dependencies {
+                implementation(libs.ktor.client.darwin)
+            }
         }
     }
 }
 
 android {
-    // ✅ Kept your original namespace
-    namespace = "org.example.project"
+    namespace = "org.example.project" // Kept your namespace
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
-        // ✅ Kept your original ID
         applicationId = "org.example.project"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
@@ -134,15 +120,17 @@ android {
 dependencies {
     debugImplementation(compose.uiTooling)
 
-    // ✅ KSP Compiler for Room (Database)
-    // We add it to both Android and Desktop targets
+    // Room Compiler moved here to ensure it runs for both targets
     add("kspAndroid", libs.androidx.room.compiler)
     add("kspDesktop", libs.androidx.room.compiler)
+    add("kspIosX64", libs.androidx.room.compiler)
+    add("kspIosArm64", libs.androidx.room.compiler)
+    add("kspIosSimulatorArm64", libs.androidx.room.compiler)
 }
 
 compose.desktop {
     application {
-        mainClass = "org.example.project.MainKt"
+        mainClass = "org.example.project.MainKt" // Make sure this matches your file structure
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
