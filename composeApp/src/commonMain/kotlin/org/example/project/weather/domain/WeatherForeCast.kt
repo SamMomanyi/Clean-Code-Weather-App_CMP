@@ -1,14 +1,14 @@
-package org.example.project.Weather.Domain
+package org.example.project.weather.domain
 
 data class WeatherForeCast(
-    val temperature : Double,
+    val time: String,
+    val location: String,
+    val temperature: Double,
     val iconDescription : String,
-    val time : String,
-    val day : String,
-    val location:String,
-    val overallImageDescription : String,
-    val precipitationImageDescription : String,
-    val windImageDescription : String,
-    val humidityImageDescription : String,
 
-    )
+
+    // These objects now carry their own specific values AND icons
+    val wind: Wind,
+    val humidity: Humidity,
+    val precipitation: Precipitation
+)

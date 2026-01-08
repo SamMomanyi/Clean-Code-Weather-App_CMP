@@ -1,6 +1,4 @@
-package org.example.project.Weather.Domain
-
-
+package org.example.project.weather.domain
 
 
 data class Humidity(

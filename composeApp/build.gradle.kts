@@ -118,6 +118,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.material3.android)
     debugImplementation(compose.uiTooling)
 
     // Room Compiler moved here to ensure it runs for both targets

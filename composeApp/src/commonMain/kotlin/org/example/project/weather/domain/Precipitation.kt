@@ -1,6 +1,4 @@
-package org.example.project.Weather.Domain
-
-import io.ktor.http.Url
+package org.example.project.weather.domain
 
 
 data class Precipitation(

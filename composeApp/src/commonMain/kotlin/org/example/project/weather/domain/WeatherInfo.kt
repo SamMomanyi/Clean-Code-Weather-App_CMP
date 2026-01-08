@@ -1,7 +1,14 @@
-package org.example.project.Weather.Domain
+package org.example.project.weather.domain
 
 //should be of pure kotlin code , we can then covert using Coil
 
+
+
 data class WeatherInfo(
-    val weatherInfo : List<WeatherForeCast>
+    // The specific data for right now (or the next 24 hours)
+    val hourlyForecast: List<WeatherForeCast>,
+    // The summary for the week
+    val dailyForecast: List<DailyForecast>,
+    // The "Headline" image for the current moment
+    val currentDayWeatherImage: String
 )
