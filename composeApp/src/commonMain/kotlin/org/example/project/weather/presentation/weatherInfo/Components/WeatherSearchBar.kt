@@ -1,6 +1,8 @@
 package org.example.project.weather.presentation.weatherInfo.Components
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -16,8 +18,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.dp
 import cmp_weatherapp.composeapp.generated.resources.Res
 import cmp_weatherapp.composeapp.generated.resources.search_hint
 import org.example.project.core.presentation.DarkBlue
@@ -32,7 +36,7 @@ fun WeatherSearchBar(
     searchQuery : String,
     onSearchQueryChange : (String) -> Unit,
     onImeSearch : () -> Unit, //trigger the search action when we click the search button on the phone
-    state :  WeatherInfoState
+    state : WeatherInfoState
 ) {
     CompositionLocalProvider(
         LocalTextSelectionColors provides TextSelectionColors(
@@ -40,48 +44,55 @@ fun WeatherSearchBar(
             backgroundColor = SandYellow
         )
     ) {
-        OutlinedTextField(
-            value = searchQuery,
-            onValueChange = onSearchQueryChange,
-            shape = RoundedCornerShape(100),
-            colors = OutlinedTextFieldDefaults.colors(
-                cursorColor = DarkBlue,
-                focusedBorderColor = SandYellow
-            ),
-            placeholder = {
-                Text(
-                    text = stringResource(Res.string.search_hint)
-                )
-            },
-            trailingIcon = {
-                AnimatedVisibility(
-                    visible = searchQuery.isNotBlank()
-                ) {
-                    IconButton(
-                        onClick = {
-                            onSearchQueryChange("")
-                            weatherCommand(WeatherInfoCommand.adjustSearchBar)
-                        }
+        AnimatedContent(
+            targetState = state.extendedSearchBar
+        ) {
+            OutlinedTextField(
+                modifier = Modifier
+                    .height(56.dp),
+
+                value = searchQuery,
+                onValueChange = onSearchQueryChange,
+                shape = RoundedCornerShape(100),
+                colors = OutlinedTextFieldDefaults.colors(
+                    cursorColor = DarkBlue,
+                    focusedBorderColor = SandYellow
+                ),
+                placeholder = {
+                    Text(
+                        text = stringResource(Res.string.search_hint)
+                    )
+                },
+                trailingIcon = {
+                    AnimatedVisibility(
+                        visible = searchQuery.isNotBlank()
                     ) {
-                        Icon(
-                            imageVector = Icons.Default.Close,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onSurface
-                        )
+                        IconButton(
+                            onClick = {
+                                onSearchQueryChange("")
+                                weatherCommand(WeatherInfoCommand.adjustSearchBar)
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Close,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onSurface
+                            )
+                        }
                     }
-                }
-            },
-            singleLine = true,
-            //show keyboard
-            keyboardActions = KeyboardActions(
-                onSearch = {
-                    onImeSearch()
-                }
-            ),
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Text,
-                imeAction = ImeAction.Search
+                },
+                singleLine = true,
+                //show keyboard
+                keyboardActions = KeyboardActions(
+                    onSearch = {
+                        onImeSearch()
+                    }
+                ),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Search
+                )
             )
-            )
+        }
     }
 }

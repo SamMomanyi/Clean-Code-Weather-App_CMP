@@ -14,4 +14,5 @@ data class WeatherInfoState(
     val favoriteLocations : List<Location> = emptyList(),
     val selectedTabIndex: Int = 0,
     val locationSheetOpened : Boolean = false
+
     )
