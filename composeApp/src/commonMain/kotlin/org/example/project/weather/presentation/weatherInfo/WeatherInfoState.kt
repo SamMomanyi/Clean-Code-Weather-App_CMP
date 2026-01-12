@@ -1,18 +1,22 @@
 package org.example.project.weather.presentation.weatherInfo
 
 import org.example.project.weather.domain.Location
-import org.example.project.weather.domain.WeatherForeCast
+import org.example.project.weather.domain.HourlyForeCast
 import org.example.project.core.presentation.UiText
+import org.example.project.weather.domain.DailyForecast
+import org.example.project.weather.domain.WeatherInfo
 
 data class WeatherInfoState(
 
     val extendedSearchBar : Boolean = false,
-    val errorMessage : UiText? = null,
+    val errorMessage : String = "",
     val searchQuery: String = "",
     val isLoading : Boolean = true,
-    val weatherInfo: List<WeatherForeCast> = emptyList(),
+    val selectedDay: Int = 0,
     val favoriteLocations : List<Location> = emptyList(),
     val selectedTabIndex: Int = 0,
-    val locationSheetOpened : Boolean = false
+    val locationSheetOpened : Boolean = false,
+    val isCardClicked : Boolean = false,
+    val weatherInfo: WeatherInfo? = null
 
     )

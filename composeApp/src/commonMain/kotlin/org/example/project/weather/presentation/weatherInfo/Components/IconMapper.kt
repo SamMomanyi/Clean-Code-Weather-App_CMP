@@ -4,19 +4,19 @@ import cmp_weatherapp.composeapp.generated.resources.Res
 import cmp_weatherapp.composeapp.generated.resources.*
 import org.jetbrains.compose.resources.StringResource
 
-fun iconMapper(
+fun IconMapper(
     iconCode: String,
     isDay: Boolean = true
 ): DrawableResource {
     return when (iconCode) {
-        "0", "1" -> if (isDay) Res.drawable.WBSunny else Res.drawable.PartlyCloudyNight // Fallback to night icon if sun isn't out
-        "2" -> if (isDay) Res.drawable.PartlyCloudyDay else Res.drawable.PartlyCloudyNight
-        "3" -> Res.drawable.Cloud // Your "fully cloudy" icon
-        "45", "48" -> Res.drawable.Foggy
-        "51", "53", "55", "61", "63", "65" -> Res.drawable.Rainy
-        "71", "73", "75", "77" -> Res.drawable.Snowy
-        "95", "96", "99" -> Res.drawable.Rainy // Or Thunderstorm if you have it
-        else -> Res.drawable.Unkown // Fallback for errors
+        "0", "1" -> if (isDay) Res.drawable.sunny_day else Res.drawable.partly_cloudy_night // Fallback to night icon if sun isn't out
+        "2" -> if (isDay) Res.drawable.partly_cloudy_day else Res.drawable.partly_cloudy_night
+        "3" -> Res.drawable.cloud // Your "fully cloudy" icon
+        "45", "48" -> Res.drawable.foggy
+        "51", "53", "55", "61", "63", "65" -> Res.drawable.rainy_day
+        "71", "73", "75", "77" -> Res.drawable.snowy_day
+        "95", "96", "99" -> Res.drawable.rainy_day // Or Thunderstorm if you have it
+        else -> Res.drawable.unkown_day // Fallback for errors
     }
 }
 

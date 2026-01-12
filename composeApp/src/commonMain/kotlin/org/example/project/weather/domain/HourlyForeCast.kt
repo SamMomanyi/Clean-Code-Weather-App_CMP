@@ -1,6 +1,6 @@
 package org.example.project.weather.domain
 
-data class WeatherForeCast(
+data class HourlyForeCast(
     val time: String,
     val location: String,
     val temperature: Double,

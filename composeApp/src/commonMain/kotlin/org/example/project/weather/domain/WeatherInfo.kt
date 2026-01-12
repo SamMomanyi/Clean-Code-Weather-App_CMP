@@ -6,9 +6,9 @@ package org.example.project.weather.domain
 
 data class WeatherInfo(
     // The specific data for right now (or the next 24 hours)
-    val hourlyForecast: List<WeatherForeCast>,
+    val hourlyForecast: List<HourlyForeCast>,
     // The summary for the week
     val dailyForecast: List<DailyForecast>,
     // The "Headline" image for the current moment
-    val currentDayWeatherImage: String
+    val currentWeatherData: HourlyForeCast?
 )
