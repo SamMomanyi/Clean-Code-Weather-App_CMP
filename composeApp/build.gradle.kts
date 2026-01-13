@@ -82,10 +82,12 @@ kotlin {
         }
 
         // This will now work because applyDefaultHierarchyTemplate() created it
-        val nativeMain by getting {
-            dependencies {
-                implementation(libs.ktor.client.darwin)
-            }
+        nativeMain.dependencies {
+            implementation(libs.ktor.client.darwin)
+        }
+
+        dependencies {
+            ksp(libs.androidx.room.compiler)
         }
     }
 }

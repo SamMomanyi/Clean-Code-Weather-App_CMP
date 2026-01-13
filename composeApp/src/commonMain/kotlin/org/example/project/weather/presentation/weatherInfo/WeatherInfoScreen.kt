@@ -3,6 +3,7 @@ package org.example.project.weather.presentation.weatherInfo
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
@@ -17,6 +18,7 @@ import org.example.project.weather.domain.Humidity
 import org.example.project.weather.domain.Precipitation
 import org.example.project.weather.domain.HourlyForeCast
 import org.example.project.weather.domain.Wind
+import org.example.project.weather.presentation.weatherInfo.Components.WeatherList
 import org.example.project.weather.presentation.weatherInfo.Components.WeatherToday
 import org.example.project.weather.presentation.weatherInfo.Components.WeatherTopBar
 
@@ -26,12 +28,14 @@ fun WeatherInfoScreenRoot(
 ){
     val state by viewModel.state.collectAsStateWithLifecycle()
     val selectedIndex = state.selectedDay
+    val weekyForecast = state.weatherInfo?.dailyForecast
     val currentDay = state.weatherInfo?.dailyForecast[selectedIndex]
     val todayList = state.weatherInfo?.hourlyForecast?.subList(selectedIndex * 24,(selectedIndex + 1) * 24)
 
     WeatherInfoScreen(
         state = state,
         currentDay = currentDay!!,
+        weeklyForecast = weekyForecast!!,
         todayList = todayList!!,
         onCommand = { viewModel.WeatherCommandHandler(it) }
     )
@@ -42,6 +46,7 @@ fun WeatherInfoScreen(
     state :  WeatherInfoState,
     currentDay : DailyForecast,
     todayList : List<HourlyForeCast>,
+    weeklyForecast : List<DailyForecast>,
     onCommand : (WeatherInfoCommand) -> Unit
 ){
     //hide keyboard on imeSearch
@@ -77,6 +82,15 @@ fun WeatherInfoScreen(
             todaysForecast = todayList,
             state = state,
             onCardClick = { WeatherInfoCommand.onDaySelected(it) },
+        )
+
+        WeatherList(
+            modifier = Modifier.fillMaxWidth(),
+            onCardCLick = { WeatherInfoCommand.onDaySelected(it) },
+            dailyForecasts = weeklyForecast,
+            scrollState = dailySearchResultListState,
+            state = state,
+            hourlyForecasts = null
         )
     }
 

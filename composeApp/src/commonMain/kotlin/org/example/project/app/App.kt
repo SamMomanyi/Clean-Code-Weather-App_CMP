@@ -18,30 +18,15 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 import cmp_weatherapp.composeapp.generated.resources.Res
 import cmp_weatherapp.composeapp.generated.resources.compose_multiplatform
+import org.example.project.weather.presentation.weatherInfo.WeatherInfoScreen
+import org.example.project.weather.presentation.weatherInfo.WeatherInfoScreenRoot
 
 @Composable
 @Preview
 fun App() {
     MaterialTheme {
-        var showContent by remember { mutableStateOf(false) }
-        Column(
-            modifier = Modifier
-                .background(MaterialTheme.colorScheme.primaryContainer)
-                .safeContentPadding()
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Button(onClick = { showContent = !showContent }) {
-                Text("Hello World")
-            }
-            AnimatedVisibility(showContent) {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    Image(painterResource(Res.drawable.compose_multiplatform), null)
-                }
-            }
-        }
+        WeatherInfoScreenRoot(
+
+        )
     }
 }
