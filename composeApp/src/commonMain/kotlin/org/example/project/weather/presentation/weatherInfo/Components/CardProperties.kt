@@ -9,7 +9,7 @@ import org.example.project.core.presentation.LightBlue
 
 object CardProperties {
     enum class Card(val color: Color,val shape: Shape?,val cardSize: Dp,val cardDistance: Dp?) {
-        DAYLYCARD(LightBlue, RoundedCornerShape(20.dp), 50.dp, cardDistance = 0.dp),
-        HOURLYCARD(color = Color.Transparent,RoundedCornerShape(0.dp),70.dp, cardDistance = 10.dp)
+        DAYLYCARD(color= LightBlue, RoundedCornerShape(20.dp), 50.dp, cardDistance = 0.dp),
+        HOURLYCARD(color = LightBlue,RoundedCornerShape(0.dp),70.dp, cardDistance = 10.dp)
     }
 }

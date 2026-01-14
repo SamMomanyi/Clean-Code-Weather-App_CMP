@@ -22,10 +22,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.example.project.core.presentation.DarkBlue
 import org.example.project.core.presentation.LightBlue
 import org.example.project.weather.domain.DailyForecast
 import org.example.project.weather.domain.HourlyForeCast
 import org.example.project.weather.domain.WeatherInfo
+import org.example.project.weather.presentation.weatherInfo.WeatherInfoCommand
 import org.example.project.weather.presentation.weatherInfo.WeatherInfoState
 import org.jetbrains.compose.resources.painterResource
 
@@ -34,7 +36,7 @@ import org.jetbrains.compose.resources.painterResource
 fun WeatherToday(
     dailyForecast : DailyForecast,
     todaysForecast : List<HourlyForeCast>,
-    onCardClick : (Int) -> Unit,
+    weatherCommandHandler : (WeatherInfoCommand) -> Unit,
     state: WeatherInfoState
 ) {
 
@@ -44,13 +46,14 @@ fun WeatherToday(
         enabled = false,
         shape = RoundedCornerShape(23.dp),
         colors = CardDefaults.cardColors(
-            containerColor = LightBlue
+            disabledContainerColor = LightBlue,
         ),
         elevation = CardDefaults.cardElevation(10.dp),
         border = BorderStroke(10.dp, color = Color.Transparent),
         onClick = {
 
         },
+        modifier = Modifier.padding(10.dp)
     ) {
         Column() {
             Column(
@@ -83,11 +86,13 @@ fun WeatherToday(
                 }
 
               WeatherList(
+
                   modifier = Modifier.padding(10.dp),
-                  onCardCLick = onCardClick,
                   dailyForecasts = null,
                   hourlyForecasts = todaysForecast,
-                  state = state
+                  state = state,
+                  weatherCommandHandler = {weatherCommandHandler(it)},
+
               )
 
             }

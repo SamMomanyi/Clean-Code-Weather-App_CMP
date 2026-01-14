@@ -12,12 +12,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.example.project.weather.domain.DailyForecast
 import org.example.project.weather.domain.HourlyForeCast
+import org.example.project.weather.presentation.weatherInfo.WeatherInfoCommand
 import org.example.project.weather.presentation.weatherInfo.WeatherInfoState
 
 @Composable
 fun WeatherList(
     modifier : Modifier = Modifier,
-    onCardCLick : (Int) -> Unit,
+    weatherCommandHandler: (WeatherInfoCommand) -> Unit,
     dailyForecasts: List<DailyForecast>?,
     hourlyForecasts : List<HourlyForeCast>?,
     scrollState : LazyListState = rememberLazyListState(),
@@ -39,7 +40,8 @@ fun WeatherList(
             ) { index,dailyForecast ->
                 WeatherInfoCard(
                     daily = dailyForecast,
-                    onClick = { onCardCLick( index) },
+                    index = index,
+                    onClick = { weatherCommandHandler(WeatherInfoCommand.onDaySelected(index)) },
                     isSelected = index == state.selectedDay,
                     state = state
                 )

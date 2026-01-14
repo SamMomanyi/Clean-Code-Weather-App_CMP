@@ -1,9 +1,11 @@
 package org.example.project.weather.presentation.weatherInfo
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
@@ -12,19 +14,24 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import org.example.project.weather.domain.DailyForecast
 import org.example.project.weather.domain.Humidity
 import org.example.project.weather.domain.Precipitation
 import org.example.project.weather.domain.HourlyForeCast
 import org.example.project.weather.domain.Wind
 import org.example.project.weather.presentation.weatherInfo.Components.WeatherList
+import org.example.project.weather.presentation.weatherInfo.Components.WeatherModalBottomSheet
 import org.example.project.weather.presentation.weatherInfo.Components.WeatherToday
 import org.example.project.weather.presentation.weatherInfo.Components.WeatherTopBar
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
+@Preview
 fun WeatherInfoScreenRoot(
-    viewModel : WeatherInfoViewModel = WeatherInfoViewModel(),
+    viewModel : WeatherInfoViewModel = viewModel{ WeatherInfoViewModel() },
 ){
     val state by viewModel.state.collectAsStateWithLifecycle()
     val selectedIndex = state.selectedDay
@@ -68,8 +75,9 @@ fun WeatherInfoScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Color.DarkGray)
-            .statusBarsPadding()
+            .background(color = Color.Black)
+            .statusBarsPadding(),
+        
     ){
         WeatherTopBar(
             state = state,
@@ -81,17 +89,22 @@ fun WeatherInfoScreen(
             dailyForecast = currentDay,
             todaysForecast = todayList,
             state = state,
-            onCardClick = { WeatherInfoCommand.onDaySelected(it) },
+            weatherCommandHandler = { onCommand(it) },
         )
 
         WeatherList(
             modifier = Modifier.fillMaxWidth(),
-            onCardCLick = { WeatherInfoCommand.onDaySelected(it) },
+            weatherCommandHandler = { onCommand(it) },
             dailyForecasts = weeklyForecast,
             scrollState = dailySearchResultListState,
             state = state,
             hourlyForecasts = null
         )
+        if(state.locationSheetOpened){
+        WeatherModalBottomSheet(
+            weatherInfoCommand = {onCommand(it)},
+            modifier = Modifier.padding(10.dp)
+        )
     }
 
-}
+}}

@@ -103,18 +103,22 @@ class WeatherInfoViewModel : ViewModel() {
                }
             }
          }
+
          is WeatherInfoCommand.onDaySelected -> {
              val clickedDay = weatherInfoCommand.selectedIndex
              _state.update{
                  it.copy(
                      selectedDay = clickedDay,
-                     isCardClicked = true
                  )
              }
-
          }
-         is WeatherInfoCommand.onSearchBarValChange -> {
 
+         is WeatherInfoCommand.onSearchBarValChange -> {
+             _state.update {
+                 it.copy(
+                     searchQuery = weatherInfoCommand.Location
+                 )
+             }
          }
 
          WeatherInfoCommand.openLocationSheet -> {

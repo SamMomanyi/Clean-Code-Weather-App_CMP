@@ -45,7 +45,8 @@ fun WeatherTopBar(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .statusBarsPadding(),
+            .statusBarsPadding()
+            .padding(10.dp),
         contentAlignment = Alignment.TopCenter
     ) {
         Surface(
@@ -56,8 +57,8 @@ fun WeatherTopBar(
         ) {
             AnimatedContent(
                 targetState = state.extendedSearchBar
-            ) {
-                if (state.extendedSearchBar) {
+            ) { isExpanded ->
+                if (isExpanded) {
                     WeatherSearchBar(
                         weatherInfoCommand,
                         searchQuery = state.searchQuery,

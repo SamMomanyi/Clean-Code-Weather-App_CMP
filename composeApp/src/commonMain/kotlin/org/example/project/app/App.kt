@@ -26,7 +26,6 @@ import org.example.project.weather.presentation.weatherInfo.WeatherInfoScreenRoo
 fun App() {
     MaterialTheme {
         WeatherInfoScreenRoot(
-
         )
     }
 }

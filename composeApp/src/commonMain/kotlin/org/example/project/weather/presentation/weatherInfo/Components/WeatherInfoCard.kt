@@ -20,16 +20,18 @@ import androidx.compose.foundation.BorderStroke
 import org.example.project.core.presentation.DarkBlue
 import org.example.project.weather.domain.DailyForecast
 import org.example.project.weather.domain.HourlyForeCast
+import org.example.project.weather.presentation.weatherInfo.WeatherInfoCommand
 import org.example.project.weather.presentation.weatherInfo.WeatherInfoState
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun WeatherInfoCard(
     daily: DailyForecast? = null,
+    index: Int? = null,
     hourly: HourlyForeCast? = null,
     isSelected: Boolean = false,
     state: WeatherInfoState?,
-    onClick: (() -> Unit)?
+    onClick: (WeatherInfoCommand) -> Unit
 ) {
     // 1. Determine the "Mode" and "Style"
     val cardProperties = if (daily != null) CardProperties.Card.DAYLYCARD else CardProperties.Card.HOURLYCARD
@@ -38,7 +40,8 @@ fun WeatherInfoCard(
     val displayTime = daily?.day ?: hourly?.time ?: ""
     val displayTemp = if (daily != null) "${daily.highestTemperature.toInt()}° / ${daily.lowestTemperature.toInt()}°" else "${hourly?.temperature?.toInt()}°"
     val iconCode = daily?.overallIconDescription ?: hourly?.iconDescription ?: "0"
-    val cardState = state?.isCardClicked?: false
+    // Hourly cards shouldn't usually trigger the "selectedDay" border.
+    val isCardSelected = daily != null && index != null && state?.selectedDay == index
     // 3. Get the Icon Resource (Logic only)
     val iconRes = IconMapper(iconCode = iconCode, isDay = true) // You can pass real isDay logic later
 
@@ -46,13 +49,18 @@ fun WeatherInfoCard(
         modifier = Modifier.padding(cardProperties.cardDistance ?: 0.dp),
         colors = CardDefaults.cardColors(containerColor = cardProperties.color),
         shape = cardProperties.shape ?: RoundedCornerShape(0.dp),
-        border = if(cardState) {
+        border = if(isCardSelected) {
             BorderStroke(
-                width = 3.dp,
-                color = Color.Black
+                width = 4.dp,
+                color = Color.White
             )
         } else {
             null
+        },
+        onClick = {
+            index?.let {
+                onClick(WeatherInfoCommand.onDaySelected(it))
+            }
         }
     ) {
         Column(

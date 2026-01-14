@@ -2,6 +2,7 @@ package org.example.project.weather.presentation.weatherInfo.Components
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -49,10 +50,11 @@ fun WeatherSearchBar(
         ) {
             OutlinedTextField(
                 modifier = Modifier
-                    .height(56.dp),
+                    .height(56.dp)
+                    .fillMaxWidth(),
 
                 value = searchQuery,
-                onValueChange = onSearchQueryChange,
+                onValueChange = { onSearchQueryChange(it) },
                 shape = RoundedCornerShape(100),
                 colors = OutlinedTextFieldDefaults.colors(
                     cursorColor = DarkBlue,
@@ -76,7 +78,7 @@ fun WeatherSearchBar(
                             Icon(
                                 imageVector = Icons.Default.Close,
                                 contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onSurface
+                                tint = DarkBlue
                             )
                         }
                     }

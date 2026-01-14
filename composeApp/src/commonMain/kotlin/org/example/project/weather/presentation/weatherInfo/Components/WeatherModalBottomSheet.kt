@@ -48,7 +48,7 @@ fun WeatherModalBottomSheet(
     }
 
     ModalBottomSheet(
-        onDismissRequest = { weatherInfoCommand(WeatherInfoCommand.adjustSearchBar) },
+        onDismissRequest = { weatherInfoCommand(WeatherInfoCommand.openLocationSheet) },
         modifier = modifier,
         sheetState = sheetState,
         sheetMaxWidth = BottomSheetDefaults.SheetMaxWidth,
