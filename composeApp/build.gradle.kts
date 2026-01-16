@@ -60,13 +60,10 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
-
             implementation(libs.jetbrains.compose.navigation)
             implementation(libs.kotlinx.serialization.json)
-
             implementation(libs.androidx.room.runtime)
             implementation(libs.sqlite.bundled)
-
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
             api(libs.koin.core) // Make Koin Core available to platform source sets
