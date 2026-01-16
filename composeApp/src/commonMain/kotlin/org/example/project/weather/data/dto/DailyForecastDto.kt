@@ -5,6 +5,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class DailyForecastDto(
-    @SerialName("day")val dailyResults : List<Day>,
-    @SerialName("forecastDay")val forecastDay : List<forecastDay>
+    @SerialName("day")val dailyResults : List<DayDto>,
+    @SerialName("forecastDay")val forecastDay : List<ForeCastDto>
 )

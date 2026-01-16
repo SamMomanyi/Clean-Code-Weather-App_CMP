@@ -4,9 +4,9 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Day(
-    @SerialName("maxtemp_c")val maxTemperature : Int,
-    @SerialName("mintemp_c")val minTemperature : Int,
+data class DayDto(
+    @SerialName("maxtemp_c")val maxTemperature : Double,
+    @SerialName("mintemp_c")val minTemperature : Double,
     @SerialName("code") val iconCode : Int,
     @SerialName("text")val text : String,
 //    @SerialName("hour")val hourlyForeCastDto: HourlyForeCastDto
