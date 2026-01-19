@@ -1,0 +1,48 @@
+package org.example.project.core.data
+
+import io.ktor.client.call.NoTransformationFoundException
+import io.ktor.client.call.body
+import io.ktor.client.network.sockets.SocketTimeoutException
+import io.ktor.client.statement.HttpResponse
+import io.ktor.util.network.UnresolvedAddressException
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.ensureActive
+import org.example.project.core.domain.DataError
+import org.example.project.core.domain.Result
+import kotlin.coroutines.coroutineContext
+
+//a utility function for executing the http call
+suspend inline fun <reified T> safeCall(
+    execute: () -> HttpResponse
+): Result<T,DataError.Remote> {
+    val response = try{
+        execute()
+    } catch (e: SocketTimeoutException){
+        return Result.Error(DataError.Remote.REQUEST_TIMEOUT)
+    } catch (e: UnresolvedAddressException){
+        return Result.Error(DataError.Remote.NO_INTERNET)
+    } catch (e : Exception){
+        currentCoroutineContext().ensureActive()
+        return Result.Error(DataError.Remote.UNKNOWN)
+    }
+
+    return  responseToResult(response)
+}
+
+// a utility funcion that gets a http response and tries to return data
+suspend inline fun <reified T> responseToResult(
+    response : HttpResponse
+) : Result<T,DataError.Remote>{
+    return when (response.status.value){
+        in 200 .. 299 -> {
+            //we try to parse our response body into Result.Success data class
+            try{
+                Result.Success(response.body<T>())
+            } catch( e : NoTransformationFoundException ){ Result.Error(DataError.Remote.SERIALIZATION)}
+        }
+        408 -> Result.Error(DataError.Remote.REQUEST_TIMEOUT)
+        429 -> Result.Error(DataError.Remote.TOO_MANY_REQUEST)
+       in 500 .. 599 -> Result.Error(DataError.Remote.SERVER)
+        else -> Result.Error(DataError.Remote.UNKNOWN)
+    }
+}

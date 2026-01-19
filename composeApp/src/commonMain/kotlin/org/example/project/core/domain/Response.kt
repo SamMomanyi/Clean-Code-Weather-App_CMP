@@ -1,6 +1,8 @@
 package org.example.project.core.domain
 
-sealed class Response <out  T>
-    data class Success<T>(val data :  T): Response<T>()
-    data class Failed(val ex: Exception?):Response<Nothing>()
-    data object isLoading : Response<Nothing>()
+sealed interface Response <out  D, out E: Error> {
+    data class Success<out D>(val data: D) : Response<D, Nothing>
+    data class Failed<out E: org.example.project.core.domain.Error>(val error: E) : Response<Nothing, E>
+
+
+}
