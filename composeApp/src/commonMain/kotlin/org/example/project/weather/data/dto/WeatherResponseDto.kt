@@ -6,9 +6,7 @@ import kotlinx.serialization.Serializable
 
 //when we call what will the api respond with
 @Serializable
-data class WeatherReponseDto(
-
-
+data class WeatherResponseDto(
 
     @SerialName("location")val location : LocationDto,
     @SerialName("current")val current : CurrentDto,

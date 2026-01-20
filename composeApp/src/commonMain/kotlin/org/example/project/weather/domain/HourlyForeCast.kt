@@ -2,9 +2,8 @@ package org.example.project.weather.domain
 
 data class HourlyForeCast(
     val time: String,
-    val location: String,
     val temperature: Double,
-    val iconDescription : String,
+    val iconCode : String,
 
 
     // These objects now carry their own specific values AND icons

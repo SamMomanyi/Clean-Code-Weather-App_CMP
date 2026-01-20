@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import IconMapper
 import androidx.compose.foundation.BorderStroke
 import org.example.project.core.presentation.DarkBlue
-import org.example.project.weather.domain.DailyForecast
+import org.example.project.weather.domain.DailyForeCast
 import org.example.project.weather.domain.HourlyForeCast
 import org.example.project.weather.presentation.weatherInfo.WeatherInfoCommand
 import org.example.project.weather.presentation.weatherInfo.WeatherInfoState
@@ -26,7 +26,7 @@ import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun WeatherInfoCard(
-    daily: DailyForecast? = null,
+    daily: DailyForeCast? = null,
     index: Int? = null,
     hourly: HourlyForeCast? = null,
     isSelected: Boolean = false,
@@ -39,7 +39,7 @@ fun WeatherInfoCard(
     // 2. Map the data based on which object is provided
     val displayTime = daily?.day ?: hourly?.time ?: ""
     val displayTemp = if (daily != null) "${daily.highestTemperature.toInt()}° / ${daily.lowestTemperature.toInt()}°" else "${hourly?.temperature?.toInt()}°"
-    val iconCode = daily?.overallIconDescription ?: hourly?.iconDescription ?: "0"
+    val iconCode = daily?.overallIconDescription ?: hourly?.iconCode ?: "0"
     // Hourly cards shouldn't usually trigger the "selectedDay" border.
     val isCardSelected = daily != null && index != null && state?.selectedDay == index
     // 3. Get the Icon Resource (Logic only)

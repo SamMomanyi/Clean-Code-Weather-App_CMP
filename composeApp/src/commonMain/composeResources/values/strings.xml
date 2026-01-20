@@ -34,4 +34,7 @@
     <string name="error_no_internet">No internet connection detected.</string>
     <string name="error_too_many_requests">Too many requests. Please wait a moment.</string>
     <string name="error_serialization">Failed to process data correctly.</string>
+    <string name="now"> Now. </string>
+    <string name="today">Today</string>
+
 </resources>

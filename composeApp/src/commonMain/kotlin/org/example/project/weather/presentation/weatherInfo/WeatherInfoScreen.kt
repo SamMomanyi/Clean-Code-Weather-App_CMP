@@ -1,7 +1,6 @@
 package org.example.project.weather.presentation.weatherInfo
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,11 +16,8 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import org.example.project.weather.domain.DailyForecast
-import org.example.project.weather.domain.Humidity
-import org.example.project.weather.domain.Precipitation
+import org.example.project.weather.domain.DailyForeCast
 import org.example.project.weather.domain.HourlyForeCast
-import org.example.project.weather.domain.Wind
 import org.example.project.weather.presentation.weatherInfo.Components.WeatherList
 import org.example.project.weather.presentation.weatherInfo.Components.WeatherModalBottomSheet
 import org.example.project.weather.presentation.weatherInfo.Components.WeatherToday
@@ -51,9 +47,9 @@ fun WeatherInfoScreenRoot(
 @Composable
 fun WeatherInfoScreen(
     state :  WeatherInfoState,
-    currentDay : DailyForecast,
+    currentDay : DailyForeCast,
     todayList : List<HourlyForeCast>,
-    weeklyForecast : List<DailyForecast>,
+    weeklyForecast : List<DailyForeCast>,
     onCommand : (WeatherInfoCommand) -> Unit
 ){
     //hide keyboard on imeSearch

@@ -10,7 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import org.example.project.weather.domain.DailyForecast
+import org.example.project.weather.domain.DailyForeCast
 import org.example.project.weather.domain.HourlyForeCast
 import org.example.project.weather.presentation.weatherInfo.WeatherInfoCommand
 import org.example.project.weather.presentation.weatherInfo.WeatherInfoState
@@ -19,7 +19,7 @@ import org.example.project.weather.presentation.weatherInfo.WeatherInfoState
 fun WeatherList(
     modifier : Modifier = Modifier,
     weatherCommandHandler: (WeatherInfoCommand) -> Unit,
-    dailyForecasts: List<DailyForecast>?,
+    dailyForecasts: List<DailyForeCast>?,
     hourlyForecasts : List<HourlyForeCast>?,
     scrollState : LazyListState = rememberLazyListState(),
     state : WeatherInfoState

@@ -1,9 +1,6 @@
 package org.example.project.weather.presentation.weatherInfo
 
 import org.example.project.weather.domain.Location
-import org.example.project.weather.domain.HourlyForeCast
-import org.example.project.core.presentation.UiText
-import org.example.project.weather.domain.DailyForecast
 import org.example.project.weather.domain.WeatherInfo
 
 data class WeatherInfoState(

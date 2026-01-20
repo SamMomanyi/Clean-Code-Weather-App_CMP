@@ -22,11 +22,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import org.example.project.core.presentation.DarkBlue
 import org.example.project.core.presentation.LightBlue
-import org.example.project.weather.domain.DailyForecast
+import org.example.project.weather.domain.DailyForeCast
 import org.example.project.weather.domain.HourlyForeCast
-import org.example.project.weather.domain.WeatherInfo
 import org.example.project.weather.presentation.weatherInfo.WeatherInfoCommand
 import org.example.project.weather.presentation.weatherInfo.WeatherInfoState
 import org.jetbrains.compose.resources.painterResource
@@ -34,7 +32,7 @@ import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun WeatherToday(
-    dailyForecast : DailyForecast,
+    dailyForecast : DailyForeCast,
     todaysForecast : List<HourlyForeCast>,
     weatherCommandHandler : (WeatherInfoCommand) -> Unit,
     state: WeatherInfoState

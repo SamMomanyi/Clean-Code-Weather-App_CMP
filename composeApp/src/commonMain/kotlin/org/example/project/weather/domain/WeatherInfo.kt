@@ -8,7 +8,7 @@ data class WeatherInfo(
     // The specific data for right now (or the next 24 hours)
     val hourlyForecast: List<HourlyForeCast>,
     // The summary for the week
-    val dailyForecast: List<DailyForecast>,
+    val dailyForecast: List<DailyForeCast>,
     // The "Headline" image for the current moment
     val currentWeatherData: HourlyForeCast?
 )

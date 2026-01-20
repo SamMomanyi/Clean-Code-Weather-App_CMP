@@ -67,7 +67,7 @@ kotlin {
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
             api(libs.koin.core) // Make Koin Core available to platform source sets
-
+            implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.0")
             implementation(libs.bundles.ktor)
             implementation(libs.bundles.coil)
         }

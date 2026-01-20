@@ -11,7 +11,7 @@ import org.example.project.core.domain.Failed
 import org.example.project.core.domain.Response
 import org.example.project.core.domain.Success
 import org.example.project.core.domain.isLoading
-import org.example.project.weather.domain.DailyForecast
+import org.example.project.weather.domain.DailyForeCast
 import org.example.project.weather.domain.HourlyForeCast
 import org.example.project.weather.domain.Humidity
 import org.example.project.weather.domain.Precipitation
@@ -30,11 +30,11 @@ class WeatherInfoViewModel : ViewModel() {
                 time = "${hourOfDay}:00",
                 location = "Nairobi",
                 temperature = 22.0 + (index % 5), // Varies slightly
-                iconDescription = if (hourOfDay in 6..18) "0" else "2", // Day vs Night
+                iconCode = if (hourOfDay in 6..18) "0" else "2", // Day vs Night
                 wind = Wind(
                     iconDescription = "wind_speed",
                     time = "14:00",
-                    value = 12.5 // km/h
+                    windSpeed = 12.5 // km/h
                 ),
                 humidity = Humidity(
                     iconDescription = "humidity_level",
@@ -51,13 +51,13 @@ class WeatherInfoViewModel : ViewModel() {
         }
 
         val dummyDays = listOf(
-            DailyForecast("Mon", "Jan 12", "0", 28.5, 18.2),
-            DailyForecast("Tue", "Jan 13", "2", 26.1, 17.5),
-            DailyForecast("Wed", "Jan 14", "61", 22.0, 16.0), // Rain
-            DailyForecast("Thu", "Jan 15", "3", 24.5, 17.0), // Cloudy
-            DailyForecast("Fri", "Jan 16", "0", 29.0, 19.0),
-            DailyForecast("Sat", "Jan 17", "2", 27.2, 18.5),
-            DailyForecast("Sun", "Jan 18", "45", 21.0, 15.5) // Foggy
+            DailyForeCast("Mon", "Jan 12", "0", 28.5, 18.2),
+            DailyForeCast("Tue", "Jan 13", "2", 26.1, 17.5),
+            DailyForeCast("Wed", "Jan 14", "61", 22.0, 16.0), // Rain
+            DailyForeCast("Thu", "Jan 15", "3", 24.5, 17.0), // Cloudy
+            DailyForeCast("Fri", "Jan 16", "0", 29.0, 19.0),
+            DailyForeCast("Sat", "Jan 17", "2", 27.2, 18.5),
+            DailyForeCast("Sun", "Jan 18", "45", 21.0, 15.5) // Foggy
         )
 
         val dummyWeather = WeatherInfo(
