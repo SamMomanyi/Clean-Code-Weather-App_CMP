@@ -16,9 +16,12 @@ import org.example.project.weather.domain.HourlyForeCast
 import org.example.project.weather.domain.Humidity
 import org.example.project.weather.domain.Precipitation
 import org.example.project.weather.domain.WeatherInfo
+import org.example.project.weather.domain.WeatherRepository
 import org.example.project.weather.domain.Wind
 
-class WeatherInfoViewModel : ViewModel() {
+class WeatherInfoViewModel(
+    private val weatherRepository : WeatherRepository
+) : ViewModel() {
 
    private  val _state = MutableStateFlow(WeatherInfoState())
    val state : StateFlow<WeatherInfoState> = _state.asStateFlow()
@@ -167,5 +170,6 @@ class WeatherInfoViewModel : ViewModel() {
         }
     }
 
+    private fun observerSearch
 
 }

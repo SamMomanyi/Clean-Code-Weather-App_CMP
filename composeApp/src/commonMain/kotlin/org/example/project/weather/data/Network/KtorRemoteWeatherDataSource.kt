@@ -5,27 +5,32 @@ import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import org.example.project.core.data.safeCall
 import org.example.project.core.domain.DataError
-import org.example.project.weather.domain.WeatherInfo
+import org.example.project.core.domain.Result
+import org.example.project.weather.data.dto.WeatherResponseDto
 
-private const val BASE_URL = ""
+
+private val WEATHER_API = "86035935315a83456637550907"
+private const val BASE_URL = "http://api.weatherapi.com/v1"
 
 class KtorRemoteBookDataSource(
     private val httpClient: HttpClient
-) {
-    suspend fun searchWeather(
+): RemoteWeatherDataSource{
+   override suspend fun searchWeather(
         query : String,
-        resultLimit : Int? = null
-    ): Result<List<WeatherInfo>, DataError.Remote > {
+        resultLimit : Int?
+    ): Result<WeatherResponseDto, DataError.Remote > {
         return safeCall {
             httpClient.get(
-                urlString =
+                urlString = "$BASE_URL/forecast.json"
             ){
                 //specify some parameters
                 parameter("q",query)
+                parameter("days",7)
+                parameter("key", WEATHER_API)
                 parameter("limit",resultLimit)
                 parameter("language","eng")
                 //this specififes only the necessary fields we need from the API which can be similar to SearchedBookDto
-                parameter("fi")
+                parameter("fields","location,current,forecast")
             }
         }
     }
