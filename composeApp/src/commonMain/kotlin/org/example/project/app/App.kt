@@ -18,14 +18,30 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 import cmp_weatherapp.composeapp.generated.resources.Res
 import cmp_weatherapp.composeapp.generated.resources.compose_multiplatform
+import io.ktor.client.engine.HttpClientEngine
+import org.example.project.core.data.HttpClientFactory
+import org.example.project.weather.data.Network.KtorRemoteWeatherDataSource
+import org.example.project.weather.data.repository.DefaultWeatherRepository
 import org.example.project.weather.presentation.weatherInfo.WeatherInfoScreen
 import org.example.project.weather.presentation.weatherInfo.WeatherInfoScreenRoot
+import org.example.project.weather.presentation.weatherInfo.WeatherInfoViewModel
 
 @Composable
 @Preview
-fun App() {
+//the engine is normally platform specific
+fun App(engine : HttpClientEngine) {
     MaterialTheme {
         WeatherInfoScreenRoot(
+            viewModel = remember {
+                WeatherInfoViewModel(
+                    weatherRepository = DefaultWeatherRepository(
+                        remoteWeatherDataSource = KtorRemoteWeatherDataSource(
+                        httpClient = HttpClientFactory.create(
+                            engine
+                        )
+                    )
+                ))
+            }
         )
     }
 }

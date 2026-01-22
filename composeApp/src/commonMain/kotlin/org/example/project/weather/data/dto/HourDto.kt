@@ -8,12 +8,12 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class HourDto(
 
-    @SerialName("localtime")val time : String,
+    @SerialName("time")val time : String,
     @SerialName("temp_c") val temp : Double,
     @SerialName("condition")val condition : ConditionDto,
-    @SerialName("wind_kph")val windSpeed : Int,
+    @SerialName("wind_kph")val windSpeed : Double,
     @SerialName("wind_dir")val windDirection : String,
-    @SerialName("humidity")val humidity : Int,
-    @SerialName("precip_mm")val precipitation : Int,
+    @SerialName("humidity")val humidity : Double,
+    @SerialName("precip_mm")val precipitation : Double,
 
 )

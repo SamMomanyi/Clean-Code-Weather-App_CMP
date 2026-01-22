@@ -5,7 +5,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.tooling.preview.Preview
+import io.ktor.client.engine.okhttp.OkHttp
+
 import org.example.project.app.App
 
 class MainActivity : ComponentActivity() {
@@ -13,14 +16,15 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
+
         setContent {
-            App()
+            //for android we use the OkHttp
+            App(
+                engine = remember {
+                    OkHttp.create()
+                }
+            )
         }
     }
 }
 
-@Preview
-@Composable
-fun AppAndroidPreview() {
-    App()
-}

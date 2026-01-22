@@ -21,6 +21,7 @@ fun WeatherList(
     weatherCommandHandler: (WeatherInfoCommand) -> Unit,
     dailyForecasts: List<DailyForeCast>?,
     hourlyForecasts : List<HourlyForeCast>?,
+    currentWeather : HourlyForeCast?,
     scrollState : LazyListState = rememberLazyListState(),
     state : WeatherInfoState
 ) {
@@ -49,7 +50,7 @@ fun WeatherList(
         } else {
             //we will first use
             items(
-                items = hourlyForecasts!!,
+                items =  hourlyForecasts!!,
                 key = {it.time}
             ) { hourlyForecast ->
                 WeatherInfoCard(

@@ -9,11 +9,11 @@ import org.example.project.core.domain.Result
 import org.example.project.weather.data.dto.WeatherResponseDto
 
 
-private val WEATHER_API = "86035935315a83456637550907"
-private const val BASE_URL = "http://api.weatherapi.com/v1"
+private val WEATHER_API = "8607f12126c2455591a81453250907"
+private const val BASE_URL = "https://api.weatherapi.com/v1"
 
-class KtorRemoteBookDataSource(
-    private val httpClient: HttpClient
+class KtorRemoteWeatherDataSource(
+    private val httpClient: HttpClient //we will later on create an object factory to build the httpClient
 ): RemoteWeatherDataSource{
    override suspend fun searchWeather(
         query : String,

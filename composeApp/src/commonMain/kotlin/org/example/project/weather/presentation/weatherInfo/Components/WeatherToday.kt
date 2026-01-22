@@ -22,23 +22,35 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.todayIn
 import org.example.project.core.presentation.LightBlue
 import org.example.project.weather.domain.DailyForeCast
 import org.example.project.weather.domain.HourlyForeCast
 import org.example.project.weather.presentation.weatherInfo.WeatherInfoCommand
 import org.example.project.weather.presentation.weatherInfo.WeatherInfoState
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 
 @Composable
 fun WeatherToday(
-    dailyForecast : DailyForeCast,
-    todaysForecast : List<HourlyForeCast>,
+
+    currentWeather : HourlyForeCast,
+    currentDay : DailyForeCast,
+    currentDayForecast : List<HourlyForeCast>,
     weatherCommandHandler : (WeatherInfoCommand) -> Unit,
     state: WeatherInfoState
+
 ) {
 
-    val imageRes = IconMapper(dailyForecast.overallIconDescription)
+    val imageRes = IconMapper(currentDay.overallIconDescription)
+    val today = Clock.System.todayIn(TimeZone.currentSystemDefault())
+    val forecastDate = LocalDate.parse(currentDay.date)
+
+    val dayName : String = if(forecastDate == today) "Now" else { "${currentDay.day },${currentDay.date}" }
 
     Card(
         enabled = false,
@@ -53,11 +65,13 @@ fun WeatherToday(
         },
         modifier = Modifier.padding(10.dp)
     ) {
-        Column() {
+        Column(
+            modifier = Modifier.padding(10.dp)
+        ) {
             Column(
             ) {
                 Text(
-                    text = "${dailyForecast.day}, ${dailyForecast.date}"
+                    text = dayName
                 )
 
                 Row(
@@ -65,30 +79,32 @@ fun WeatherToday(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "${dailyForecast.highestTemperature} / ${dailyForecast.highestTemperature}"
+                        text = "${currentDay.highestTemperature} / ${currentDay.lowestTemperature}"
                     )
+
                     Icon(
                         painter = painterResource(imageRes),
                         contentDescription = null,
                         modifier = Modifier.size(60.dp),
                         tint = Color.Unspecified
                     )
+
                     Text(
-                        text = "${DescriptionMapper(dailyForecast.overallIconDescription)}",
+                        text = stringResource(DescriptionMapper(currentDay.overallIconDescription)),
                         textAlign = TextAlign.Right,
                         fontSize = 10.sp,
                         fontStyle = FontStyle.Italic,
                         fontWeight = FontWeight.Bold
                     )
-
                 }
 
               WeatherList(
 
                   modifier = Modifier.padding(10.dp),
                   dailyForecasts = null,
-                  hourlyForecasts = todaysForecast,
+                  hourlyForecasts = currentDayForecast,
                   state = state,
+                  currentWeather = currentWeather,
                   weatherCommandHandler = {weatherCommandHandler(it)},
 
               )

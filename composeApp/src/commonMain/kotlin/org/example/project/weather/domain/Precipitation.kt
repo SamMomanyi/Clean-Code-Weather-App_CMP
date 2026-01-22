@@ -5,6 +5,6 @@ data class Precipitation(
 
 
     val time: String,
-    val value: Int
+    val value: Double
 
 )
