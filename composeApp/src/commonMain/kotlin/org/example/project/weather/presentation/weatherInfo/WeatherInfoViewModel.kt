@@ -35,18 +35,6 @@ class WeatherInfoViewModel(
     private val _state = MutableStateFlow(WeatherInfoState(searchQuery = "Nairobi"))
     val state: StateFlow<WeatherInfoState> = _state.asStateFlow()
 
-    //    val state = _state
-//        .onStart {
-//            if(cachedWeatherData.isEmpty()){
-//                observerSearchQuery()
-//            }
-//        }
-//        .stateIn(
-//            viewModelScope,
-//            SharingStarted.WhileSubscribed(5000L),
-//            _state.value
-//        )
-    //we show the last searched data when query is empty
     private val cachedWeatherData: WeatherInfo? = null
     private var searchJob: Job? = null
 
@@ -124,7 +112,7 @@ class WeatherInfoViewModel(
                         _state.update {
                             it.copy(
                                 errorMessage = null,
-                                weatherInfo = cachedWeatherData
+                             //   weatherInfo = cachedWeatherData
                             )
                         }
                     }
