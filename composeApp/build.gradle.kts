@@ -71,6 +71,18 @@ kotlin {
             implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.0")
             implementation(libs.bundles.ktor)
             implementation(libs.bundles.coil)
+            // --- Compass Location ---
+            implementation(libs.compass.geolocation)
+            implementation(libs.compass.geolocation.mobile)
+            implementation(libs.compass.permissions.mobile)
+
+            // --- Compass Geocoding ---
+            implementation(libs.compass.geocoder)
+            implementation(libs.compass.geocoder.mobile)
+
+            // --- Compass Autocomplete ---
+            implementation(libs.compass.autocomplete)
+            implementation(libs.compass.autocomplete.mobile)
         }
 
         desktopMain.dependencies {

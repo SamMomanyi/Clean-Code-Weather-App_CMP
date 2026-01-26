@@ -29,7 +29,7 @@ suspend inline fun <reified T> safeCall(
     return  responseToResult(response)
 }
 
-// a utility funcion that gets a http response and tries to return data
+// a utility function that gets a http response and tries to return data
 suspend inline fun <reified T> responseToResult(
     response : HttpResponse
 ) : Result<T,DataError.Remote>{

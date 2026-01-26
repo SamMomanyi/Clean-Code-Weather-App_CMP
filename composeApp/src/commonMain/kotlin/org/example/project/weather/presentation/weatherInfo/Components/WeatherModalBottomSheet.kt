@@ -44,12 +44,11 @@ fun WeatherModalBottomSheet(
     modifier : Modifier
 ){
     val sheetState = rememberModalBottomSheetState {
-        false
+        true
     }
 
     ModalBottomSheet(
         onDismissRequest = { weatherInfoCommand(WeatherInfoCommand.openLocationSheet) },
-        modifier = modifier,
         sheetState = sheetState,
         sheetMaxWidth = BottomSheetDefaults.SheetMaxWidth,
         shape = BottomSheetDefaults.ExpandedShape,
@@ -60,7 +59,6 @@ fun WeatherModalBottomSheet(
         properties = ModalBottomSheetDefaults.properties,
     ){
         BottomSheetPage(
-            modifier = Modifier,
             weatherInfoCommand
         )
     }
@@ -69,7 +67,6 @@ fun WeatherModalBottomSheet(
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun BottomSheetPage(
-    modifier : Modifier,
     weatherInfoCommand: (WeatherInfoCommand) ->Unit
 ){
     val popularCities = listOf<String>(
@@ -107,7 +104,8 @@ fun BottomSheetPage(
             text = "Popular"
         )
         FlowRow (
-            modifier = modifier,
+
+            modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ){

@@ -7,10 +7,18 @@ sealed interface DataError : Error{
         NO_INTERNET,
         SERVER,
         SERIALIZATION,
-        UNKNOWN
+        UNKNOWN,
+
+        UNKNOWN_PLACE
     }
     enum class Local: DataError{
+        NOT_SUPPORTED,
+        PERMISSION_ERROR,
+        GEOLOCATIONFAILED,
+        NOT_FOUND,
         DISK_FULL,
         UNKNOWN
     }
+
+
 }

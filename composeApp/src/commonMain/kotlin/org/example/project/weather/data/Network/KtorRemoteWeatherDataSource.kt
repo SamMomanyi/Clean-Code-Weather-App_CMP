@@ -9,7 +9,7 @@ import org.example.project.core.domain.Result
 import org.example.project.weather.data.dto.WeatherResponseDto
 
 
-private val WEATHER_API = "8YOUR API"
+private val WEATHER_API = "8607f12126c2455591a81453250907"
 private const val BASE_URL = "https://api.weatherapi.com/v1"
 
 class KtorRemoteWeatherDataSource(

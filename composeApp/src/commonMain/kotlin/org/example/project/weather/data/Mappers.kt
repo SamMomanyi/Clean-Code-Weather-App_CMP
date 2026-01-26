@@ -1,8 +1,7 @@
 package org.example.project.weather.data
 
-import androidx.compose.runtime.Composable
-import cmp_weatherapp.composeapp.generated.resources.Res
-import cmp_weatherapp.composeapp.generated.resources.now
+import dev.jordond.compass.Place
+import dev.jordond.compass.autocomplete.AutocompleteResult
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
@@ -12,14 +11,15 @@ import org.example.project.weather.data.dto.ForeCastDayDto
 import org.example.project.weather.data.dto.HourDto
 import org.example.project.weather.data.dto.LocationDto
 import org.example.project.weather.data.dto.WeatherResponseDto
+import org.example.project.weather.domain.City
 import org.example.project.weather.domain.DailyForeCast
 import org.example.project.weather.domain.HourlyForeCast
 import org.example.project.weather.domain.Humidity
 import org.example.project.weather.domain.Location
+import org.example.project.weather.domain.LocationAutoComplete
 import org.example.project.weather.domain.Precipitation
 import org.example.project.weather.domain.WeatherInfo
 import org.example.project.weather.domain.Wind
-import org.jetbrains.compose.resources.stringResource
 
 fun WeatherResponseDto.toWeatherInfo() : WeatherInfo {
 
@@ -104,4 +104,19 @@ fun ForeCastDayDto.toDailyForeCast()  : DailyForeCast {
         lowestTemperature = day.minTemperature
     )
 
+}
+
+fun Place.toCity() : City {
+    return City(
+        cityName = locality ?: name ?: "Unknown location"
+    )
+}
+
+// Mapper specifically for the Autocomplete results
+
+
+fun AutocompleteResult.Success<Place>.toLocationAutoComplete() : LocationAutoComplete{
+    return LocationAutoComplete(
+        suggestions = data.map{it.toCity()}
+    )
 }

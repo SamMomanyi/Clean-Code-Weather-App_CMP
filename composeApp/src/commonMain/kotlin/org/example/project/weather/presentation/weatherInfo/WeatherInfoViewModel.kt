@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.debounce
@@ -12,32 +11,27 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDateTime
 import org.example.project.core.domain.onError
 import org.example.project.core.domain.onSuccess
 import org.example.project.core.presentation.toUiText
-import org.example.project.weather.domain.DailyForeCast
-import org.example.project.weather.domain.HourlyForeCast
-import org.example.project.weather.domain.Humidity
-import org.example.project.weather.domain.Precipitation
+import org.example.project.weather.domain.PlaceRepository
 import org.example.project.weather.domain.WeatherInfo
 import org.example.project.weather.domain.WeatherRepository
-import org.example.project.weather.domain.Wind
 
 class WeatherInfoViewModel(
-    private val weatherRepository: WeatherRepository
+    private val weatherRepository: WeatherRepository,
+    private val placeRepository: PlaceRepository
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(WeatherInfoState(searchQuery = "Nairobi"))
+    private val _state = MutableStateFlow(WeatherInfoState(searchQueryInteractionState = SearchQueryInteractionState.Typed("Nairobi")))
     val state: StateFlow<WeatherInfoState> = _state.asStateFlow()
 
     private val cachedWeatherData: WeatherInfo? = null
     private var searchJob: Job? = null
-
+    private var obtainCurrentLocation : Job? = null
 
     init {
         observerSearchQuery()
@@ -74,11 +68,32 @@ class WeatherInfoViewModel(
             }
 
             is WeatherInfoCommand.onSearchBarValChange -> {
-                _state.update {
-                    it.copy(
-                        searchQuery = weatherInfoCommand.Location
-                    )
+                //get the new query String from the command
+                val newQuery = weatherInfoCommand.queryState.query
+
+                when(weatherInfoCommand.queryState ){
+                    is SearchQueryInteractionState.ModalSheetItem -> {
+                        _state.update {
+                            it.copy(
+                                searchQueryInteractionState = weatherInfoCommand.queryState,
+                            )
+                        }
+                    }
+
+                    is SearchQueryInteractionState.Typed -> {
+                        _state.update{
+                            it.copy(
+                                searchQueryInteractionState = weatherInfoCommand.queryState
+                            )
+                        }
+                    }
+                    is SearchQueryInteractionState.UsePreciseLocation -> {
+                        obtainCurrentLocation().cancel()
+                     obtainCurrentLocation = obtainCurrentLocation()
+
+                    }
                 }
+
             }
 
             WeatherInfoCommand.openLocationSheet -> {
@@ -102,7 +117,7 @@ class WeatherInfoViewModel(
     private fun observerSearchQuery() {
         state
             .map {
-                it.searchQuery
+                it.searchQueryInteractionState.query
             }
             .distinctUntilChanged()
             .debounce(500L)
@@ -116,7 +131,6 @@ class WeatherInfoViewModel(
                             )
                         }
                     }
-
                     query.length >= 2 -> {
                         //if we type a new searchJob we cancel the previous one
                         searchJob?.cancel()
@@ -166,12 +180,42 @@ class WeatherInfoViewModel(
             }
     }
 
+    private fun obtainCurrentLocation() = viewModelScope.launch{
+        _state.update{
+            it.copy(
+                isLoading = true
+            )
+        }
+
+        placeRepository.searchCurrentLocation()
+            .onSuccess { preciseLocation ->
+                _state.update{
+                    it.copy(
+                        searchQueryInteractionState = SearchQueryInteractionState.UsePreciseLocation(preciseLocation.cityName!!)
+                    )
+                }
+            }
+            .onError { error->
+                _state.update {
+                    it.copy(
+                        weatherInfo = null,
+                        isLoading = false,
+                        errorMessage = error.toUiText()
+                    )
+                }
+
+            }
+
+    }
+
 
     private fun String.parseToHourDigit(): Int {
         val isoFormat = this.replace(" ", "T")
         // 2. Parse to object and get hour
         return LocalDateTime.parse(isoFormat).hour
     }
+
+
 
 
 }

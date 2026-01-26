@@ -163,12 +163,12 @@ fun WeatherInfoScreen(
 
 
 
-        if (state.locationSheetOpened) {
-            WeatherModalBottomSheet(
-                weatherInfoCommand = { onCommand(it) },
-                modifier = Modifier.padding(10.dp)
-            )
-        }
 
+    }
+    if (state.locationSheetOpened) {
+        WeatherModalBottomSheet(
+            weatherInfoCommand = { onCommand(it) },
+            modifier = Modifier.padding(10.dp)
+        )
     }
 }
