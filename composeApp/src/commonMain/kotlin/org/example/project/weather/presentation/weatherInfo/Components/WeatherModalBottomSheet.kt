@@ -34,6 +34,7 @@ import cmp_weatherapp.composeapp.generated.resources.use_precise_location
 import org.example.project.core.presentation.DarkBlue
 import org.example.project.core.presentation.DesertWhite
 import org.example.project.core.presentation.LightBlue
+import org.example.project.weather.presentation.weatherInfo.SearchQueryInteractionState
 import org.example.project.weather.presentation.weatherInfo.WeatherInfoCommand
 import org.jetbrains.compose.resources.stringResource
 
@@ -69,6 +70,8 @@ fun WeatherModalBottomSheet(
 fun BottomSheetPage(
     weatherInfoCommand: (WeatherInfoCommand) ->Unit
 ){
+
+
     val popularCities = listOf<String>(
         "Nairobi",
         "Kisii",
@@ -112,7 +115,8 @@ fun BottomSheetPage(
             popularCities.forEach { city ->
                 SuggestionChip(
                     onClick = {
-                        weatherInfoCommand(WeatherInfoCommand.onSearchBarValChange(city))
+                        weatherInfoCommand(WeatherInfoCommand.onSearchBarValChange(
+                            SearchQueryInteractionState.ModalSheetItem(city)))
                     },
                     label =  {
                        Text( city)

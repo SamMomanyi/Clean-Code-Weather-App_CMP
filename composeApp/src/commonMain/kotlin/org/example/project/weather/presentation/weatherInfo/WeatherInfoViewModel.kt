@@ -17,6 +17,7 @@ import kotlinx.datetime.LocalDateTime
 import org.example.project.core.domain.onError
 import org.example.project.core.domain.onSuccess
 import org.example.project.core.presentation.toUiText
+import org.example.project.weather.domain.LocationAutoComplete
 import org.example.project.weather.domain.PlaceRepository
 import org.example.project.weather.domain.WeatherInfo
 import org.example.project.weather.domain.WeatherRepository
@@ -32,6 +33,7 @@ class WeatherInfoViewModel(
     private val cachedWeatherData: WeatherInfo? = null
     private var searchJob: Job? = null
     private var obtainCurrentLocation : Job? = null
+    private var obtainAutoCompletes : Job ? = null
 
     init {
         observerSearchQuery()
@@ -76,14 +78,23 @@ class WeatherInfoViewModel(
                         _state.update {
                             it.copy(
                                 searchQueryInteractionState = weatherInfoCommand.queryState,
+                                locationSheetOpened = false
+
                             )
                         }
                     }
 
                     is SearchQueryInteractionState.Typed -> {
+                        _state.update {
+                            it.copy(
+                                isLoading = true
+                            )
+                        }
+                        obtainAutoComplete(weatherInfoCommand.queryState.query)
                         _state.update{
                             it.copy(
-                                searchQueryInteractionState = weatherInfoCommand.queryState
+                                searchQueryInteractionState = weatherInfoCommand.queryState,
+                                isLoading = false
                             )
                         }
                     }
@@ -132,6 +143,9 @@ class WeatherInfoViewModel(
                         }
                     }
                     query.length >= 2 -> {
+
+                        obtainAutoCompletes?.cancel()
+                        obtainAutoCompletes = obtainAutoComplete(query)
                         //if we type a new searchJob we cancel the previous one
                         searchJob?.cancel()
                         //we call the searchWeather function , it will make use of WeatherRepository and it' interface
@@ -191,7 +205,8 @@ class WeatherInfoViewModel(
             .onSuccess { preciseLocation ->
                 _state.update{
                     it.copy(
-                        searchQueryInteractionState = SearchQueryInteractionState.UsePreciseLocation(preciseLocation.cityName!!)
+                        searchQueryInteractionState = SearchQueryInteractionState.UsePreciseLocation(preciseLocation.cityName!!),
+                                locationSheetOpened = false
                     )
                 }
             }
@@ -200,12 +215,33 @@ class WeatherInfoViewModel(
                     it.copy(
                         weatherInfo = null,
                         isLoading = false,
-                        errorMessage = error.toUiText()
+                        errorMessage = error.toUiText(),
+                                locationSheetOpened = false
                     )
                 }
 
             }
 
+    }
+
+    private fun obtainAutoComplete (query : String) = viewModelScope.launch{
+        placeRepository
+            .PlacesAutoComplete(query)
+            .onSuccess { cityList ->
+                _state.update {
+                    it.copy(
+                        autoCompleteData = cityList
+                    )
+                }
+            }
+            .onError {  error ->
+                _state.update{
+                    it.copy(
+                       errorMessage = error.toUiText()
+                        )
+                }
+
+            }
     }
 
 

@@ -25,23 +25,29 @@ import org.example.project.weather.data.repository.DefaultWeatherRepository
 import org.example.project.weather.presentation.weatherInfo.WeatherInfoScreen
 import org.example.project.weather.presentation.weatherInfo.WeatherInfoScreenRoot
 import org.example.project.weather.presentation.weatherInfo.WeatherInfoViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 @Preview
 //the engine is normally platform specific
 fun App(engine : HttpClientEngine) {
     MaterialTheme {
+        val viewModel = koinViewModel<WeatherInfoViewModel>()
         WeatherInfoScreenRoot(
-            viewModel = remember {
-                WeatherInfoViewModel(
-                    weatherRepository = DefaultWeatherRepository(
-                        remoteWeatherDataSource = KtorRemoteWeatherDataSource(
-                        httpClient = HttpClientFactory.create(
-                            engine
-                        )
-                    )
-                ))
-            }
+            viewModel = viewModel
+//            viewModel = remember {
+//                WeatherInfoViewModel(
+//                    weatherRepository = DefaultWeatherRepository(
+//                        remoteWeatherDataSource = KtorRemoteWeatherDataSource(
+//                            httpClient = HttpClientFactory.create(
+//                                engine
+//                            )
+//                        )
+//                    ),
+//                    placeRepository = DefaultWeatherRepository
+//                )
+//            }
         )
     }
 }
+

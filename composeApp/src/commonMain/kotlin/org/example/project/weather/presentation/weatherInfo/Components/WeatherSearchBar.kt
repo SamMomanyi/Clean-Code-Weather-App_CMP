@@ -11,6 +11,9 @@ import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -31,6 +34,7 @@ import org.example.project.weather.presentation.weatherInfo.WeatherInfoCommand
 import org.example.project.weather.presentation.weatherInfo.WeatherInfoState
 import org.jetbrains.compose.resources.stringResource
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WeatherSearchBar(
     weatherCommand : (WeatherInfoCommand) -> Unit,
@@ -48,53 +52,79 @@ fun WeatherSearchBar(
         AnimatedContent(
             targetState = state.extendedSearchBar
         ) {
-            OutlinedTextField(
-                modifier = Modifier
-                    .height(56.dp)
-                    .fillMaxWidth(),
 
-                value = searchQuery,
-                onValueChange = { onSearchQueryChange(it) },
-                shape = RoundedCornerShape(100),
-                colors = OutlinedTextFieldDefaults.colors(
-                    cursorColor = DarkBlue,
-                    focusedBorderColor = SandYellow
-                ),
-                placeholder = {
-                    Text(
-                        text = stringResource(Res.string.search_hint)
-                    )
-                },
-                trailingIcon = {
-                    AnimatedVisibility(
-                        visible = searchQuery.isNotBlank()
-                    ) {
-                        IconButton(
-                            onClick = {
-                                onSearchQueryChange("")
-                                weatherCommand(WeatherInfoCommand.adjustSearchBar)
-                            }
+            ExposedDropdownMenuBox(
+                expanded =  state.isDropDownMenuExpanded,
+                onExpandedChange = {}
+            ) {
+
+                OutlinedTextField(
+                    modifier = Modifier
+                        .height(56.dp)
+                        .fillMaxWidth(),
+
+                    value = searchQuery,
+                    onValueChange = { onSearchQueryChange(it) },
+                    shape = RoundedCornerShape(100),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        cursorColor = DarkBlue,
+                        focusedBorderColor = SandYellow
+                    ),
+                    placeholder = {
+                        Text(
+                            text = stringResource(Res.string.search_hint)
+                        )
+                    },
+                    trailingIcon = {
+                        AnimatedVisibility(
+                            visible = searchQuery.isNotBlank()
                         ) {
-                            Icon(
-                                imageVector = Icons.Default.Close,
-                                contentDescription = null,
-                                tint = DarkBlue
+                            IconButton(
+                                onClick = {
+                                    onSearchQueryChange("")
+                                    weatherCommand(WeatherInfoCommand.adjustSearchBar)
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Close,
+                                    contentDescription = null,
+                                    tint = DarkBlue
+                                )
+                            }
+                        }
+                    },
+                    singleLine = true,
+                    //show keyboard
+                    keyboardActions = KeyboardActions(
+                        onSearch = {
+                            onImeSearch()
+                        }
+                    ),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Search
+                    )
+                )
+
+                ExposedDropdownMenu(
+                    expanded = state.isDropDownMenuExpanded,
+                    onDismissRequest = {}
+                ){
+                    var list = state.autoCompleteData?.suggestions ?: emptyList()
+                    if(list.isNotEmpty()){
+                        list.forEach { suggestion ->
+                            DropdownMenuItem(
+                                text = {
+                                    Text(text = suggestion.cityName ?: "Unkown area")
+                                },
+                                onClick = {
+                                    onSearchQueryChange(suggestion.cityName!!)
+                                }
                             )
                         }
                     }
-                },
-                singleLine = true,
-                //show keyboard
-                keyboardActions = KeyboardActions(
-                    onSearch = {
-                        onImeSearch()
-                    }
-                ),
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Search
-                )
-            )
+                }
+            }
         }
     }
 }

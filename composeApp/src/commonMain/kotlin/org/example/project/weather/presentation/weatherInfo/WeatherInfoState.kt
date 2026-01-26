@@ -4,6 +4,7 @@ import org.example.project.core.presentation.UiText
 import org.example.project.weather.domain.DailyForeCast
 import org.example.project.weather.domain.HourlyForeCast
 import org.example.project.weather.domain.Location
+import org.example.project.weather.domain.LocationAutoComplete
 import org.example.project.weather.domain.WeatherInfo
 
 data class WeatherInfoState(
@@ -23,6 +24,8 @@ data class WeatherInfoState(
     //we can get the current day from the selected index
     val currentWeather: HourlyForeCast? = null,
     val startHour: Int? = null,
+    val isDropDownMenuExpanded : Boolean = false,
+    val autoCompleteData : LocationAutoComplete? = null
 
     )
 
