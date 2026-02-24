@@ -17,9 +17,7 @@ import kotlinx.datetime.LocalDateTime
 import org.example.project.core.domain.onError
 import org.example.project.core.domain.onSuccess
 import org.example.project.core.presentation.toUiText
-import org.example.project.weather.domain.LocationAutoComplete
 import org.example.project.weather.domain.PlaceRepository
-import org.example.project.weather.domain.WeatherInfo
 import org.example.project.weather.domain.WeatherRepository
 
 class WeatherInfoViewModel(
@@ -27,128 +25,85 @@ class WeatherInfoViewModel(
     private val placeRepository: PlaceRepository
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(WeatherInfoState(searchQueryInteractionState = SearchQueryInteractionState.Typed("Nairobi")))
+    private val _state = MutableStateFlow(
+        WeatherInfoState(searchQueryInteractionState = SearchQueryInteractionState.Typed("Nairobi"))
+    )
     val state: StateFlow<WeatherInfoState> = _state.asStateFlow()
 
-    private val cachedWeatherData: WeatherInfo? = null
+    // FIX: removed dead `cachedWeatherData` val that was never updated or used
     private var searchJob: Job? = null
-    private var obtainCurrentLocation : Job? = null
-    private var obtainAutoCompletes : Job ? = null
+    private var obtainCurrentLocationJob: Job? = null
+    private var obtainAutoCompletesJob: Job? = null
 
     init {
-        observerSearchQuery()
+        observeSearchQuery()
     }
 
-
-    fun WeatherCommandHandler(weatherInfoCommand: WeatherInfoCommand) {
-
+    // FIX: renamed to camelCase per Kotlin conventions
+    fun weatherCommandHandler(weatherInfoCommand: WeatherInfoCommand) {
         when (weatherInfoCommand) {
 
-            WeatherInfoCommand.adjustSearchBar -> {
-                if (state.value.extendedSearchBar) {
-                    _state.update {
-                        it.copy(
-                            extendedSearchBar = false
-                        )
-                    }
-                } else {
-                    _state.update {
-                        it.copy(
-                            extendedSearchBar = true
-                        )
-                    }
-                }
+            WeatherInfoCommand.AdjustSearchBar -> {
+                // FIX: simplified toggle with `!`
+                _state.update { it.copy(extendedSearchBar = !it.extendedSearchBar) }
             }
 
-            is WeatherInfoCommand.onDaySelected -> {
-                val clickedDay = weatherInfoCommand.selectedIndex
-                _state.update {
-                    it.copy(
-                        selectedDay = clickedDay,
-                    )
-                }
+            is WeatherInfoCommand.OnDaySelected -> {
+                _state.update { it.copy(selectedDay = weatherInfoCommand.selectedIndex) }
             }
 
-            is WeatherInfoCommand.onSearchBarValChange -> {
-                //get the new query String from the command
-                val newQuery = weatherInfoCommand.queryState.query
-
-                when(weatherInfoCommand.queryState ){
+            is WeatherInfoCommand.OnSearchBarValChange -> {
+                when (weatherInfoCommand.queryState) {
                     is SearchQueryInteractionState.ModalSheetItem -> {
                         _state.update {
                             it.copy(
                                 searchQueryInteractionState = weatherInfoCommand.queryState,
                                 locationSheetOpened = false
-
                             )
                         }
                     }
 
                     is SearchQueryInteractionState.Typed -> {
+                        // FIX: don't set isLoading here — the coroutine hasn't run yet.
+                        // Don't call obtainAutoComplete here either; observeSearchQuery handles it
+                        // with debounce to avoid double-firing.
                         _state.update {
-                            it.copy(
-                                isLoading = true
-                            )
-                        }
-                        obtainAutoComplete(weatherInfoCommand.queryState.query)
-                        _state.update{
-                            it.copy(
-                                searchQueryInteractionState = weatherInfoCommand.queryState,
-                                isLoading = false
-                            )
+                            it.copy(searchQueryInteractionState = weatherInfoCommand.queryState)
                         }
                     }
+
                     is SearchQueryInteractionState.UsePreciseLocation -> {
-                        obtainCurrentLocation().cancel()
-                     obtainCurrentLocation = obtainCurrentLocation()
-
-                    }
-                }
-
-            }
-
-            WeatherInfoCommand.openLocationSheet -> {
-                if (state.value.locationSheetOpened) {
-                    _state.update {
-                        it.copy(locationSheetOpened = false)
-                    }
-                } else {
-                    _state.update {
-                        it.copy(
-                            locationSheetOpened = true
-                        )
+                        // FIX: was `obtainCurrentLocation().cancel()` — created a job and
+                        // immediately cancelled it. Should cancel the *previous* job.
+                        obtainCurrentLocationJob?.cancel()
+                        obtainCurrentLocationJob = obtainCurrentLocation()
                     }
                 }
             }
 
+            WeatherInfoCommand.OpenLocationSheet -> {
+                // FIX: simplified toggle with `!`
+                _state.update { it.copy(locationSheetOpened = !it.locationSheetOpened) }
+            }
         }
     }
 
-
-    private fun observerSearchQuery() {
+    // FIX: renamed to camelCase (was `observerSearchQuery`)
+    private fun observeSearchQuery() {
         state
-            .map {
-                it.searchQueryInteractionState.query
-            }
+            .map { it.searchQueryInteractionState.query }
             .distinctUntilChanged()
             .debounce(500L)
             .onEach { query ->
                 when {
                     query.isBlank() -> {
-                        _state.update {
-                            it.copy(
-                                errorMessage = null,
-                             //   weatherInfo = cachedWeatherData
-                            )
-                        }
+                        _state.update { it.copy(errorMessage = null) }
                     }
                     query.length >= 2 -> {
+                        obtainAutoCompletesJob?.cancel()
+                        obtainAutoCompletesJob = obtainAutoComplete(query)
 
-                        obtainAutoCompletes?.cancel()
-                        obtainAutoCompletes = obtainAutoComplete(query)
-                        //if we type a new searchJob we cancel the previous one
                         searchJob?.cancel()
-                        //we call the searchWeather function , it will make use of WeatherRepository and it' interface
                         searchJob = searchWeatherData(query)
                     }
                 }
@@ -156,13 +111,8 @@ class WeatherInfoViewModel(
             .launchIn(viewModelScope)
     }
 
-    //this makes sure the function returns a coroutine job
     private fun searchWeatherData(query: String) = viewModelScope.launch {
-        _state.update {
-            it.copy(
-                isLoading = true
-            )
-        }
+        _state.update { it.copy(isLoading = true) }
 
         weatherRepository
             .searchWeather(query)
@@ -172,12 +122,9 @@ class WeatherInfoViewModel(
                     it.copy(
                         isLoading = false,
                         weatherInfo = weatherData,
-                        //whenever we get data , the currentDay is always equal to the first day
                         currentWeather = weatherData.currentWeatherData,
-                        //returns all the three days from 00->24
                         weeklyForecast = weatherData.dailyForecast,
-                        //from the current time to the 23rd item.when it is first called
-                        todayList = weatherData.hourlyForecast.subList(startIndex!!, (startIndex + 25)),
+                        todayList = weatherData.hourlyForecast.subList(startIndex!!, startIndex + 25),
                         errorMessage = null
                     )
                 }
@@ -189,71 +136,49 @@ class WeatherInfoViewModel(
                         isLoading = false,
                         errorMessage = error.toUiText()
                     )
-
                 }
             }
     }
 
-    private fun obtainCurrentLocation() = viewModelScope.launch{
-        _state.update{
-            it.copy(
-                isLoading = true
-            )
-        }
+    private fun obtainCurrentLocation() = viewModelScope.launch {
+        _state.update { it.copy(isLoading = true) }
 
         placeRepository.searchCurrentLocation()
             .onSuccess { preciseLocation ->
-                _state.update{
+                _state.update {
                     it.copy(
-                        searchQueryInteractionState = SearchQueryInteractionState.UsePreciseLocation(preciseLocation.cityName!!),
-                                locationSheetOpened = false
+                        searchQueryInteractionState = SearchQueryInteractionState.UsePreciseLocation(
+                            preciseLocation.cityName!!
+                        ),
+                        locationSheetOpened = false
                     )
                 }
             }
-            .onError { error->
+            .onError { error ->
                 _state.update {
                     it.copy(
                         weatherInfo = null,
                         isLoading = false,
                         errorMessage = error.toUiText(),
-                                locationSheetOpened = false
+                        locationSheetOpened = false
                     )
                 }
-
             }
-
     }
 
-    private fun obtainAutoComplete (query : String) = viewModelScope.launch{
+    private fun obtainAutoComplete(query: String) = viewModelScope.launch {
         placeRepository
             .PlacesAutoComplete(query)
             .onSuccess { cityList ->
-                _state.update {
-                    it.copy(
-                        autoCompleteData = cityList
-                    )
-                }
+                _state.update { it.copy(autoCompleteData = cityList) }
             }
-            .onError {  error ->
-                _state.update{
-                    it.copy(
-                       errorMessage = error.toUiText()
-                        )
-                }
-
+            .onError { error ->
+                _state.update { it.copy(errorMessage = error.toUiText()) }
             }
     }
-
 
     private fun String.parseToHourDigit(): Int {
         val isoFormat = this.replace(" ", "T")
-        // 2. Parse to object and get hour
         return LocalDateTime.parse(isoFormat).hour
     }
-
-
-
-
 }
-
-
