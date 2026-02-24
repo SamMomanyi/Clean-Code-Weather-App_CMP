@@ -2,10 +2,7 @@ package org.example.project.weather.data
 
 import dev.jordond.compass.Place
 import dev.jordond.compass.autocomplete.AutocompleteResult
-import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.todayIn
 import org.example.project.weather.data.dto.CurrentDto
 import org.example.project.weather.data.dto.ForeCastDayDto
 import org.example.project.weather.data.dto.HourDto
@@ -21,34 +18,27 @@ import org.example.project.weather.domain.Precipitation
 import org.example.project.weather.domain.WeatherInfo
 import org.example.project.weather.domain.Wind
 
-fun WeatherResponseDto.toWeatherInfo() : WeatherInfo {
-
-
+fun WeatherResponseDto.toWeatherInfo(): WeatherInfo {
     return WeatherInfo(
-        hourlyForecast = forecast?.forecastDays?.flatMap { it.hour }?.map { it.toHourlyForeCast() }?: emptyList(),
-        dailyForecast = forecast?.forecastDays?.map{it.toDailyForeCast()} ?: emptyList(),
+        hourlyForecast = forecast?.forecastDays?.flatMap { it.hour }?.map { it.toHourlyForeCast() } ?: emptyList(),
+        dailyForecast = forecast?.forecastDays?.map { it.toDailyForeCast() } ?: emptyList(),
         currentWeatherData = current.toCurrent()
     )
-
 }
 
-fun CurrentDto.toCurrent() : HourlyForeCast{
+fun CurrentDto.toCurrent(): HourlyForeCast {
     return HourlyForeCast(
         time = time,
         temperature = currentTemperature,
         iconCode = condition.iconCode.toString(),
-
         wind = Wind(
             time = time,
             windSpeed = wind,
             windDirection = windDirection
         ),
-
         humidity = Humidity(
-
             time = time,
             value = humidity
-
         ),
         precipitation = Precipitation(
             time = time,
@@ -57,30 +47,23 @@ fun CurrentDto.toCurrent() : HourlyForeCast{
     )
 }
 
-fun LocationDto.toLocation()  : Location {
-    return Location(
-        name = name
-    )
+fun LocationDto.toLocation(): Location {
+    return Location(name = name)
 }
 
-fun HourDto.toHourlyForeCast() : HourlyForeCast {
-
+fun HourDto.toHourlyForeCast(): HourlyForeCast {
     return HourlyForeCast(
         time = time,
         temperature = temp,
         iconCode = condition.iconCode.toString(),
-
         wind = Wind(
             time = time,
             windSpeed = windSpeed,
             windDirection = windDirection
         ),
-
         humidity = Humidity(
-
             time = time,
             value = humidity
-
         ),
         precipitation = Precipitation(
             time = time,
@@ -89,13 +72,12 @@ fun HourDto.toHourlyForeCast() : HourlyForeCast {
     )
 }
 
-
-
-fun ForeCastDayDto.toDailyForeCast()  : DailyForeCast {
-    val today = Clock.System.todayIn(TimeZone.currentSystemDefault())
+fun ForeCastDayDto.toDailyForeCast(): DailyForeCast {
+    // FIX: removed `val today = Clock.System.todayIn(...)` — it was computed but never used.
+    // The "today vs day name" display logic belongs in the UI layer where string resources are accessible.
     val localDate = LocalDate.parse(date)
     val dayName = localDate.dayOfWeek.name.lowercase().replaceFirstChar { it.uppercase() }
-//    val displayDay = if(localDate == today) stringResource(Res.string.now) else dayName -> we will write this logic somewhere else inorder to make use of the string resource
+
     return DailyForeCast(
         day = dayName,
         date = date,
@@ -103,20 +85,14 @@ fun ForeCastDayDto.toDailyForeCast()  : DailyForeCast {
         highestTemperature = day.maxTemperature,
         lowestTemperature = day.minTemperature
     )
-
 }
 
-fun Place.toCity() : City {
+fun Place.toCity(): City {
     return City(
         cityName = locality ?: name ?: "Unknown location"
     )
 }
 
-// Mapper specifically for the Autocomplete results
-
-
-fun AutocompleteResult.Success<Place>.toLocationAutoComplete() : LocationAutoComplete{
-    return LocationAutoComplete(
-        suggestions = data.map{it.toCity()}
-    )
-}
+// FIX: removed toLocationAutoComplete() — DefaultPlaceRepository was not calling it,
+// mapping inline instead. Keeping the mapper here would be dead code.
+// The mapping now lives exclusively in DefaultPlaceRepository via Place.toCity().
