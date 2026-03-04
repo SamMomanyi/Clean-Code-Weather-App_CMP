@@ -54,6 +54,6 @@ composeApp/
 - [ ] Widget support
 - [ ] iOS polish
 
-      ![coldweather](https://github.com/user-attachments/assets/e9588561-0437-4f02-8433-1f72236d0db3)
-      ![cozy](https://github.com/user-attachments/assets/04c675cd-f38a-41d0-bae0-f420518c46ef)
+ ![coldweather](https://github.com/user-attachments/assets/e9588561-0437-4f02-8433-1f72236d0db3)
+ ![cozy](https://github.com/user-attachments/assets/04c675cd-f38a-41d0-bae0-f420518c46ef)
 
