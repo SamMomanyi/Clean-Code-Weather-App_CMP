@@ -1,48 +1,58 @@
-This is a Kotlin Multiplatform project targeting Android, iOS, Desktop (JVM).
+# CMP Weather App 🌦️
 
-* [/composeApp](./composeApp/src) is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - [commonMain](./composeApp/src/commonMain/kotlin) is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    the [iosMain](./composeApp/src/iosMain/kotlin) folder would be the right place for such calls.
-    Similarly, if you want to edit the Desktop (JVM) specific part, the [jvmMain](./composeApp/src/jvmMain/kotlin)
-    folder is the appropriate location.
+A Kotlin Multiplatform weather app for Android & iOS, built with Compose Multiplatform.
 
-* [/iosApp](./iosApp/iosApp) contains iOS applications. Even if you’re sharing your UI with Compose Multiplatform,
-  you need this entry point for your iOS app. This is also where you should add SwiftUI code for your project.
+## Stack
+- **UI** — Compose Multiplatform
+- **Networking** — Ktor + WeatherAPI
+- **DI** — Koin
+- **Location & Geocoding** — Compass (Jordond)
+- **State** — MVI (ViewModel + StateFlow + sealed commands)
+- **Async** — Kotlin Coroutines
 
-### Build and Run Android Application
+## Features
+- 🔍 City search with autocomplete
+- 📍 Precise device location
+- 🌡️ Current temp, feels like, high/low
+- 💨 Wind speed & direction
+- 💧 Humidity & precipitation
+- ☀️ UV index with color scale
+- 🌅 Sunrise & sunset times
+- 📅 3-day daily forecast
+- ⏱️ Hourly forecast scroll
+- 🎨 Animated weather background (condition-reactive orbs)
 
-To build and run the development version of the Android app, use the run configuration from the run widget
-in your IDE’s toolbar or build it directly from the terminal:
-- on macOS/Linux
-  ```shell
-  ./gradlew :composeApp:assembleDebug
-  ```
-- on Windows
-  ```shell
-  .\gradlew.bat :composeApp:assembleDebug
-  ```
+## Architecture
+```
+composeApp/
+├── core/          # Result, DataError, HTTP client, UiText
+├── weather/
+│   ├── data/      # DTOs, Ktor source, repositories, mappers
+│   ├── domain/    # Models, repository interfaces
+│   └── presentation/
+│       └── weatherInfo/   # ViewModel, State, Commands, Screens
+└── di/            # Koin modules (shared + platform)
+```
 
-### Build and Run Desktop (JVM) Application
+## Setup
+1. Get a free API key from [weatherapi.com](https://www.weatherapi.com)
+2. Add to `local.properties`:
+   ```
+   WEATHER_API_KEY=your_key_here
+   ```
+3. Wire it through `BuildConfig` in your `build.gradle.kts`
+4. Run on Android or iOS
 
-To build and run the development version of the desktop app, use the run configuration from the run widget
-in your IDE’s toolbar or run it directly from the terminal:
-- on macOS/Linux
-  ```shell
-  ./gradlew :composeApp:run
-  ```
-- on Windows
-  ```shell
-  .\gradlew.bat :composeApp:run
-  ```
+## Permissions
+- `ACCESS_FINE_LOCATION` — precise location feature
+- `ACCESS_COARSE_LOCATION` — fallback location
 
-### Build and Run iOS Application
+## TODO
+- [ ] Move API key to BuildConfig
+- [ ] Settings screen
+- [ ] Favorite locations (Room/SQLDelight)
+- [ ] Widget support
+- [ ] iOS polish
 
-To build and run the development version of the iOS app, use the run configuration from the run widget
-in your IDE’s toolbar or open the [/iosApp](./iosApp) directory in Xcode and run it from there.
+      ![coldweather](https://github.com/user-attachments/assets/e9588561-0437-4f02-8433-1f72236d0db3)![cozy](https://github.com/user-attachments/assets/04c675cd-f38a-41d0-bae0-f420518c46ef)
 
----
-
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
